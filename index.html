@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Radiante Providencia con Corazon Luminico</title>
+  <style>
+    /* Fondo y tipografía */
+    body {
+      background: linear-gradient(#121416, #1b1f24);
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      margin: 0;
+      padding: 16px;
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+      color: #e6f2ff;
+    }
+
+    /* Panel principal */
+    .panel {
+      background: linear-gradient(145deg, #1a1d21, #23272e);
+      border: 8px solid #3a4757;
+      border-radius: 24px;
+      padding: 14px;
+      width: 94%;
+      max-width: 380px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: 0 10px 30px rgba(0, 26, 64, 0.35);
+    }
+
+    /* Cámara y pantalla */
+    .camara {
+      width: 46px;
+      height: 46px;
+      background: radial-gradient(circle at 30% 30%, #000 20%, #333 60%, #111 100%);
+      border: 5px solid #3a3f46;
+      border-radius: 50%;
+      margin: 8px auto -8px;
+      position: relative;
+    }
+    .camara::after {
+      content: '';
+      width: 14px;
+      height: 14px;
+      background: radial-gradient(circle, #00ccff, #0088ff);
+      border-radius: 50%;
+      position: absolute;
+      top: 10px;
+      left: 10px;
+    }
+
+    .pantalla {
+      background: #000;
+      border: 3px solid #2a3340;
+      border-radius: 12px;
+      padding: 9px 8px 10px;
+      margin: 8px 0 12px;
+      width: 70%;
+      box-shadow: inset 0 0 18px rgba(0,170,255,0.28);
+      text-align: center;
+    }
+    .pantalla h1 {
+      font-size: 20px;
+      margin: 0 0 4px 0;
+      color: #00ccff;
+      text-shadow: 0 0 10px #00aaff;
+    }
+    .pantalla h2 {
+      font-size: 12px;
+      margin: 0;
+      opacity: 0.85;
+      color: #89b9ff;
+    }
+
+    /* Botonera */
+    .botones {
+      width: 90%;
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+      padding: 6px 0 12px;
+    }
+    .btn {
+      padding: 11px;
+      background: linear-gradient(#222831, #1d232c);
+      border: 2px solid #4b5a6b;
+      border-radius: 12px;
+      color: #cfe5ff;
+      font-size: 18px;
+      font-weight: bold;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.55);
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+    .btn:hover { transform: translateY(-1px); }
+    .btn.activo {
+      background: linear-gradient(#2a3240, #212734);
+      border-color: #00aaff;
+      color: #ffffff;
+      box-shadow: 0 0 22px rgba(0,170,255,0.55);
+    }
+    .btn.inactivo {
+      background: linear-gradient(#2a2a2a, #222);
+      border-color: #555;
+      color: #9aa9bb;
+      opacity: 0.75;
+      cursor: not-allowed;
+    }
+    .btn.tocado {
+      background: linear-gradient(#2d4e3a, #203829);
+      border-color: #00cc66;
+      box-shadow: 0 0 20px rgba(0,204,102,0.7);
+    }
+
+    /* Popups y modales */
+    .popup, .modal, .modal-guia {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.92);
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      padding: 12px;
+    }
+    .popup.abierto, .modal.abierto, .modal-guia.abierto { display: flex; }
+
+    .popup-contenido, .modal-contenido, .modal-guia-contenido {
+      background: #1b2026;
+      border: 3px solid #00aaff;
+      border-radius: 18px;
+      padding: 22px 20px;
+      width: 86%;
+      max-width: 340px;
+      text-align: center;
+      color: #e6f2ff;
+      box-shadow: 0 0 35px rgba(0,170,255,0.7);
+    }
+    .modal-contenido h3, .modal-guia-contenido h3 {
+      color: #00aaff;
+      font-size: 22px;
+      margin: 0 0 18px 0;
+    }
+    .modal-btn {
+      display: block;
+      width: 92%;
+      margin: 10px auto;
+      background: #2a3240;
+      border: 2px solid #4b5a6b;
+      border-radius: 12px;
+      font-size: 20px;
+      color: #e6f2ff;
+      text-decoration: none;
+      padding: 10px 0;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+    .modal-btn:hover {
+      background: #00aaff;
+      transform: scale(1.03);
+    }
+
+    .popup-btn, .btn-ingresar {
+      margin-top: 18px;
+      padding: 12px 28px;
+      background: #00aaff;
+      border-radius: 12px;
+      color: #00131f;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 0 18px rgba(0,170,255,0.5);
+    }
+    .btn-ingresar:hover { background: #0088ff; }
+
+    .cerrar {
+      margin-top: 16px;
+      font-size: 14px;
+      color: #cfd9e6;
+      cursor: pointer;
+      opacity: 0.9;
+    }
+
+    /* Avisos en pantalla */
+    .avisos {
+      width: 82%;
+      margin-top: 6px;
+      font-size: 13px;
+      color: #a7c6ff;
+      min-height: 18px;
+      text-align: center;
+    }
+    .aviso-ok { color: #7cffc2; }
+    .aviso-warn { color: #ffc27c; }
+  </style>
+
+  <script>
+    // Avisos en la pantalla
+    function setAviso(texto, tipo = '') {
+      const avisos = document.getElementById('avisos');
+      avisos.className = 'avisos ' + (tipo ? tipo : '');
+      avisos.textContent = texto;
+    }
+
+    // Abrir/cerrar contenedores
+    function cerrarTodo() {
+      document.querySelectorAll(".popup, .modal, .modal-guia")
+        .forEach(el => el.classList.remove("abierto"));
+      setAviso('');
+    }
+
+    // Estados inactivos
+    function mostrarInactivo() {
+      document.getElementById("popup-inactivo").classList.add("abierto");
+      document.getElementById("anunciando");
+      setAviso('Anunciando: timbre inactivo. Use timbre convencional.', 'aviso-warn');
+    }
+    function mostrarDept4Inactivo() {
+      document.getElementById("popup-ina").classList.add("abierto");
+      document.getElementById("anunciando").play();
+      setAviso('Anunciando: Dpto 4 inactivo. Use timbre convencional.', 'aviso-warn');
+    }
+
+    // Bifurcación Dpto 4 → 4 y 4B
+    function abrirModalDept4() {
+      document.getElementById("modalDept4").classList.add("abierto");
+      setAviso('Seleccionar subunidad funcional del Dpto 4.');
+            // Timbre propio de 4B
+      document.getElementById("timbre4").play();
+      setAviso('Anunciando: timbre 4 enviado.', 'aviso-ok');
+   
+    }
+
+    // Guía 4B
+    function abrirGuia4B() {
+      document.getElementById("modal-guia4B").classList.add("abierto");
+      // Timbre propio de 4B
+      document.getElementById("timbre4").play();
+      setAviso('Anunciando: timbre 4 enviado.', 'aviso-ok');
+    }
+
+    // Ingresar videollamada
+    function ingresarVideoChat() {
+      // Aviso de conexión aceptada
+      document.getElementById("anunciado").play();
+      setAviso('Anunciado: conexión a Videollamada 4B aceptada.', 'aviso-ok');
+      // Redirección a videollamada whatsapp grupo dpto 4B
+      window.location.href = "https://call.whatsapp.com/video/lFsbUXPR9W8KgwXSwOvXBg";
+      cerrarTodo();
+    }
+  </script>
+</head>
+<body>
+
+  <!-- Audios -->
+  <audio id="timbre4" src="audios/timbre3chord1.mp3" preload="auto"></audio>
+  <audio id="anunciando" src="audios/timbre3chord1.mp3" preload="auto"></audio>
+  <audio id="anunciado" src="audios/timbre3chord1.mp3" preload="auto"></audio>
+
+  <div class="panel">
+    <div class="camara"></div>
+
+    <div class="pantalla">
+      <h1>Portero Virtual</h1>
+      <h2>Distribuido por Radiante Providencia</h2>
+    </div>
+
+    <!-- Avisos de estado -->
+    <div id="avisos" class="avisos"></div>
+
+    <!-- Botonera de departamentos -->
+    <div class="botones">
+      <a class="btn inactivo" onclick="mostrarInactivo()">Departamento 1</a>
+      <a class="btn inactivo" onclick="mostrarInactivo()">Departamento 2</a>
+      <a class="btn inactivo" onclick="mostrarInactivo()">Departamento 3</a>
+      <a class="btn activo" onclick="abrirModalDept4()">Departamento 4</a>
+      <a class="btn inactivo" onclick="mostrarInactivo()">Departamento 5</a>
+      <a class="btn inactivo" onclick="mostrarInactivo()">Departamento 6</a>
+    </div>
+    <div class="note">
+    ATENCION: CAMBIO TEMPORARIO DEL TIMBRE VIRTUAL A MENSAJERIA POR FALLOS DE RED de TELECENTRO
+    </div>
+     <div class="acciones">
+            <a class="btn-accion" href="mailto:consultasradianteprovidencia@gmail.com?subject=Consultar%20por%20Portero%20Virtual&body=Hola%2C%20estoy%20interesado/a%20en%20el%20portero%20virtual.%20Mi%20nombre%20es%20..." target="_blank">Enviar Email</a>
+          </div>
+  </div>
+
+  <!-- Popup genérico inactivo -->
+  <div id="popup-inactivo" class="popup" onclick="cerrarTodo()">
+    <div class="popup-contenido" onclick="event.stopPropagation()">
+      Timbre virtual inactivo<br><br>
+      Tocar timbre convencional.
+      <div class="popup-btn" onclick="cerrarTodo()">Aceptar</div>
+    </div>
+  </div>
+
+  
+    <!-- Pop-up inactivos -->
+  <div id="popup-dept4" class="popup" onclick="cerrarTodo()">
+    <div class="popup-contenido" onclick="event.stopPropagation()">
+      Departamento 4 Familiar inactivo.<br><br>
+      Tocar timbre convencional.
+      <div class="popup-btn" onclick="cerrarTodo()">Aceptar</div>
+    </div>
+  </div>
+
+  <!-- Modal bifurcado del Dpto 4 -->
+  <div id="modalDept4" class="modal" onclick="cerrarTodo()">
+    <div class="modal-contenido" onclick="event.stopPropagation()">
+      <h3>Seleccionar subunidad</h3>
+      <a class="modal-btn" onclick="mostrarInactivo();event.stopPropagation();cerrarTodo(); tocarTimbre4()">4</a>
+      <a class="modal-btn" onclick="abrirGuia4B()">4 B</a>
+      <div class="cerrar" onclick="cerrarTodo()">Cancelar</div>
+    </div>
+  </div>
+
+  <!-- Guía de ingreso para 4B -->
+  <div id="modal-guia4B" class="modal-guia" onclick="cerrarTodo()">
+    <div class="modal-guia-contenido" onclick="event.stopPropagation()">
+     
+      <p>✅ <strong>Paso 1:</strong> Conexión wifi activa o datos moviles a Internet.
+      <p>✅ <strong>Paso 2:</strong> APP Whatsapp o navegador Whatsapp Web.
+      <p>✅ <strong>Paso 3:</strong>Activar Camara y microfono <strong>Click en UNIRME</strong>
+      <p>✅ <strong>Paso 5:</strong> Aguardá a ser recibido. Demora estimada 2 a 10 minutos. Por fallos de red o destinatario ocupado, reintentar en otro momento.
+      <p>✅ <strong>Términos y condiciones:</strong> No conservar ni compartir contenido de esta llamada.Al salir vuelve a su estado base, sin registro. Todo bajo derecho y reserva de datos.</p>
+      <button class="btn-ingresar" onclick="ingresarVideoChat()">Ingresar VideoLlamada</button>
+       <div class="cerrar" onclick="cerrarTodo()">Cerrar</div>
+     
+       
+    </div>
+    </div>
+  </div>
+
+</body>
+</html>
