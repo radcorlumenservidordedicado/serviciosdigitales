@@ -196,8 +196,39 @@
     .aviso-ok { color: #7cffc2; }
     .aviso-warn { color: #ffc27c; }
   </style>
+<script>
+function sonarTimbre() {
+    const audio = document.getElementById("snd");
+    audio.currentTime = 0;
+    audio.play();
+}
 
-  <script>
+// Cambiar texto al pasar el mouse
+function cambiarTexto(elemento, nuevoTexto) {
+    elemento.dataset.original = elemento.innerText;
+    elemento.innerText = nuevoTexto;
+}
+
+// Restaurar texto al salir del mouse
+function restaurarTexto(elemento) {
+    if (elemento.dataset.original) {
+        elemento.innerText = elemento.dataset.original;
+    }
+}
+
+// Restaurar texto automáticamente después de hacer clic
+function restaurarDespuesDeClick(elemento) {
+    sonarTimbre();
+    // cambia temporalmente el texto
+    elemento.innerText = "Aviso enviado...";
+    // vuelve al nombre original después de 1 segundo
+    setTimeout(() => {
+        if (elemento.dataset.original) {
+            elemento.innerText = elemento.dataset.original;
+        }
+    }, 1000);
+}
+
     // Avisos en la pantalla
     function setAviso(texto, tipo = '') {
       const avisos = document.getElementById('avisos');
@@ -285,7 +316,12 @@
     </div>
      <div class="acciones">
             <a class="btn-accion" href="mailto:consultasradianteprovidencia@gmail.com?subject=Consultar%20por%20Portero%20Virtual&body=Hola%2C%20estoy%20interesado/a%20en%20el%20portero%20virtual.%20Mi%20nombre%20es%20..." target="_blank">Enviar Email</a>
-          </div>
+          
+            <p>Licencia MIT Copyright (c) 2026 Radiante Corazón Luminico</p>
+            
+            <a class="btn-accion" href="mailto:radcorlumenservidordedicado@gmail.com?subject=Consultar%20por%20Licencias%20&body=Hola%2C%20estoy%20interesado/a%20en%20conocer%20la%20licencia%20del%20derecho%20de autor.%20mi nombre%20es...%20apellido...%20celular..." target="_blank">LICENSE</a>
+     
+          
   </div>
 
   <!-- Popup genérico inactivo -->
@@ -311,7 +347,7 @@
   <div id="modalDept4" class="modal" onclick="cerrarTodo()">
     <div class="modal-contenido" onclick="event.stopPropagation()">
       <h3>Seleccionar subunidad</h3>
-      <a class="modal-btn" onclick="mostrarInactivo();event.stopPropagation();cerrarTodo(); tocarTimbre4()">4</a>
+      <a class="modal-btn" onclick="cerrarTodo()">4</a>
       <a class="modal-btn" onclick="abrirGuia4B()">4 B</a>
       <div class="cerrar" onclick="cerrarTodo()">Cancelar</div>
     </div>
